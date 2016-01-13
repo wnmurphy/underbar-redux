@@ -193,13 +193,15 @@
     return !!_.reduce(collection, function(trueSoFar, element){
       return trueSoFar && iterator(element);
     }, true)
-
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
-    // TIP: There's a very clever way to re-use every() here.
+    iterator = iterator || _.identity;
+    return !!_.reduce(collection, function(trueSoFar, element){
+      return trueSoFar || iterator(element);
+    }, false)
   };
 
 
@@ -321,6 +323,22 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var shuffled = array.slice();
+    var randomIndex;
+    var elementHolder;
+
+    for(var i = 0; i < array.length; i++){
+      randomIndex = Math.round(Math.random() * (array.length-1));
+      elementHolder = shuffled[i];
+      shuffled[i] = shuffled[randomIndex];
+      shuffled[randomIndex] = elementHolder;
+    } 
+
+    if(shuffled.toString() === array.toString()){
+      return _.shuffle(array);
+    }
+
+    return shuffled;
   };
 
 
