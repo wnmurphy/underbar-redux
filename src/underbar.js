@@ -233,6 +233,14 @@
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    for(var i = 0; i < arguments.length; i++){
+      for(var key in arguments[i]){
+        if(!(key in obj)){
+          obj[key] = arguments[i][key];
+        }
+      }
+    }
+    return obj;
   };
 
 
@@ -275,7 +283,17 @@
   // _.memoize should return a function that, when called, will check if it has
   // already computed the result for the given argument and return that value
   // instead if possible.
-  _.memoize = function(func) {
+  _.memoize = function(func) { 
+    var memoized = {};
+    return function(){
+      var args = Array.prototype.slice.call(arguments);
+      if(memoized[args]){
+        return memoized[args]; 
+      } else {
+        memoized[args] = func.apply(this, args);
+        return memoized[args]; 
+      }
+    }
   };
 
   // Delays a function for the given number of milliseconds, and then calls
